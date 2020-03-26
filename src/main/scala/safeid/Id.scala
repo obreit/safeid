@@ -1,6 +1,6 @@
 package safeid
 
-import safeid.constructing.IdConstructor
+import shapeless.{Generic, HNil, ::}
 import source.IdSource
 
 trait Id {
@@ -23,12 +23,12 @@ trait Id {
 object Id extends IdFunctions {
 
   def factory[T <: Id](implicit src: IdSource[T#UID],
-                       idConstr: IdConstructor[T]): IdFactory[T] = new IdFactory[T] {
-    override def create(uid: T#UID): T = idConstr.create(uid)
-    override def empty: T = idConstr.create(src.empty)
-    override def parse(str: String): T = idConstr.create(src.parse(str))
-    override def random: T = idConstr.create(src.random)
-    override def value(id: T): T#UID = idConstr.value(id)
+                       g: Generic.Aux[T, T#UID :: HNil]): IdFactory[T] = new IdFactory[T] {
+    override def create(uid: T#UID): T = g.from(uid :: HNil)
+    override def empty: T = g.from(src.empty :: HNil)
+    override def parse(str: String): T = g.from(src.parse(str) :: HNil)
+    override def random: T = g.from(src.random :: HNil)
+    override def value(id: T): T#UID = g.to(id).head
   }
 }
 

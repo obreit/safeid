@@ -15,5 +15,5 @@ trait IdFunctions {
     implicitly[IdFactory[T]].random
 
   def value[T <: Id: IdFactory](id: T): T#UID =
-    id.underlying
+    implicitly[IdFactory[T]].value(id)
 }
