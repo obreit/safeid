@@ -1,14 +1,11 @@
 package safeid
 
-trait IdFactory[ID <: Id] {
+import box.{BoxFactory, Valid}
 
-  def create(uid: ID#UID): ID
+trait IdFactory[I <: Id] extends BoxFactory[I] {
 
-  def empty: ID
-
-  def parse(str: String): ID
-
-  def random: ID
-
-  def value(id: ID): ID#UID
+  def random: I
+}
+object IdFactory {
+  def apply[I <: Id: IdFactory]: IdFactory[I] = implicitly[IdFactory[I]]
 }
