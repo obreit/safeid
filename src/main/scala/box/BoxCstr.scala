@@ -5,7 +5,7 @@ import shapeless.{:+:, ::, CNil, Coproduct, Generic, HNil, Inl, Inr}
 import scala.util.Try
 import scala.reflect.runtime.universe.TypeTag
 
-// we cannot add a type bound here, otherwise 'coproductCstr: BoxCstr[H :+: T]' wouldn't work
+// We cannot add a type bound here, otherwise 'coproductCstr: BoxCstr[H :+: T]' wouldn't work
 trait BoxCstr[B] {
   type Repr
 
@@ -51,18 +51,18 @@ object BoxCstr {
     Left(s"Couldn't parse '$repr'")
   }
 
-  // Note this only compiles for hierarchies consisting of only 'object's!!!
+  // Note this only compiles for sealed hierarchies consisting of only 'object's!!!
   // Note that there is a constraint that all subelements of the hierarchy have the same underlying type (H#Repr)
-  implicit def coproductCstr[H <: Box: TypeTag, T <: Coproduct: TypeTag](implicit ev: GenericForObject[H],
-                                                                         HC: BoxCstr.Aux[H, H#Repr],
-                                                                         TC: BoxCstr.Aux[T, H#Repr]): BoxCstr.Aux[:+:[H,T], H#Repr] = {
+  implicit def cConsCstr[H <: Box: TypeTag, T <: Coproduct: TypeTag](implicit ev: GenericForObject[H],
+                                                                     HC: BoxCstr.Aux[H, H#Repr],
+                                                                     TC: BoxCstr.Aux[T, H#Repr]): BoxCstr.Aux[:+:[H,T], H#Repr] = {
     instance[H :+: T, H#Repr] { repr =>
       HC.create(repr).map(Inl(_)).left.flatMap(_ => TC.create(repr).map(Inr(_)))
     }
   }
 
-  implicit def cstr[B <: Box: TypeTag, C <: Coproduct](implicit G: Generic.Aux[B, C],
-                                                       CC: BoxCstr.Aux[C, B#Repr]): BoxCstr.Aux[B, B#Repr] =
+  implicit def sealedBoxCstr[B <: Box: TypeTag, C <: Coproduct](implicit G: Generic.Aux[B, C],
+                                                                CC: BoxCstr.Aux[C, B#Repr]): BoxCstr.Aux[B, B#Repr] =
     instance(repr => CC.create(repr).map(G.from))
 
   // This trait allows to collect all instances of a sealed hierarchy into a seq

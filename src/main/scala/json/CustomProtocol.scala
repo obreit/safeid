@@ -2,5 +2,5 @@ package json
 
 import spray.json.DefaultJsonProtocol
 
-trait CustomProtocol extends DefaultJsonProtocol with BoxFmt
+trait CustomProtocol extends DefaultJsonProtocol with UUIDFmt with BoxFmt
 object CustomProtocol extends CustomProtocol

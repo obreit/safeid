@@ -1,6 +1,6 @@
 package safeid
 
-import box.{BoxFactory, Valid}
+import box.BoxFactory
 
 trait IdFactory[I <: Id] extends BoxFactory[I] {
 

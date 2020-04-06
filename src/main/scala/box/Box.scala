@@ -35,14 +35,21 @@ object Box extends BoxFunctions {
   }
 }
 
+trait TypedBox[T] extends Box {
+  override type Repr = T
+}
+
+/*
+ Doing 'extends FactorySupport[B <: Box](BoxCstr[B])'
+ or 'FactorySupport[B <: Box](implicit BC: BoxCstr.Aux[B, B#Repr])' gives weird compiler error
+ but 'val x = BoxCstr[B]
+     'extends FactorySupport[B <: Box](x)' works
+*/
 abstract class FactorySupport[B <: Box](BC: BoxCstr.Aux[B, B#Repr]) {
-  implicit def f: BoxFactory[B] = Box.factory[B](BC)
+  implicit val f: BoxFactory[B] = Box.factory[B](BC)
 }
 
 trait UnapplySupport[B <: Box] {
-
-  //implicit lazy val fact: BoxFactory[B] = Box.factory[B](BC)
-
   def values: Seq[B]
 
   def unapply(r: B#Repr): Option[B] = values.find(_.repr == r)
@@ -52,14 +59,9 @@ trait UnapplySupport[B <: Box] {
 
   /*
   works without caching
-  def unapplyNotCached[C <: Coproduct](r: B#Repr)(implicit g: Generic.Aux[B, C],
-                                         V: Values[B, C]): Option[B] = {
-    val vs = V.values
-    vs.find(_.repr == r)
+  def unapplyNotCached[C <: Coproduct](r: B#Repr)(implicit ev: Generic.Aux[B, C],
+                                                  V: Values[B, C]): Option[B] = {
+    V.values.find(_.repr == r)
   }*/
-}
-
-trait TypedBox[T] extends Box {
-  override type Repr = T
 }
 
