@@ -105,7 +105,7 @@ object Main extends App {
   println(Box.value[DeviceId](Id.random[DeviceId]))
 
   // doesn't compile (as required)
-  /*
+/*
   println(Id.create[AlertState]("clear"))
   println(Id.random[AlertState])
   println(Id.value[AlertState]("clear".box[AlertState]))

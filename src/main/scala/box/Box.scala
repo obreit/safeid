@@ -45,8 +45,12 @@ trait TypedBox[T] extends Box {
  but 'val x = BoxCstr[B]
      'extends FactorySupport[B <: Box](x)' works
 */
-abstract class FactorySupport[B <: Box](BC: BoxCstr.Aux[B, B#Repr]) {
-  implicit val f: BoxFactory[B] = Box.factory[B](BC)
+//abstract class FactorySupport[B <: Box](BC: BoxCstr.Aux[B, B#Repr]) {
+//  implicit val f: BoxFactory[B] = Box.factory[B](BC)
+//}
+
+trait FactorySupport[B <: Box] {
+  val f: BoxFactory[B]
 }
 
 trait UnapplySupport[B <: Box] {

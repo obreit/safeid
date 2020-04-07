@@ -32,6 +32,7 @@ object BoxCstr {
     )
   }
 
+  // creating an instance for any 'object'
   implicit def objectCstr[B <: Box: TypeTag](implicit G: GenericForObject[B]): BoxCstr.Aux[B, B#Repr] =
     instance[B, B#Repr] { repr =>
       val expected = G.from(HNil)
@@ -39,6 +40,8 @@ object BoxCstr {
       else Left(s"Given '$repr' does not match expected '$expected'")
     }
 
+  // create an instance for any one-field case class
+  // note that a 'sealed abstract case class' doesn't have a generic implicit!
   //TODO typetag might add nice info, but is maybe too slow
   implicit def caseClassCstr[B <: Box: TypeTag](implicit G: Generic.Aux[B, B#Repr :: HNil]): BoxCstr.Aux[B, B#Repr] =
     instance[B, B#Repr] { repr =>
@@ -61,6 +64,7 @@ object BoxCstr {
     }
   }
 
+  // create an instance for a sealed hierarchy
   implicit def sealedBoxCstr[B <: Box: TypeTag, C <: Coproduct](implicit G: Generic.Aux[B, C],
                                                                 CC: BoxCstr.Aux[C, B#Repr]): BoxCstr.Aux[B, B#Repr] =
     instance(repr => CC.create(repr).map(G.from))

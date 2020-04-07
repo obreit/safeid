@@ -5,8 +5,7 @@ import box.{Box, BoxCstr, BoxFactory, FactorySupport, TypedBox, UnapplySupport}
 object Alert {
 
   sealed abstract class AlertState(val repr: String) extends TypedBox[String]
-
-  object AlertState extends UnapplySupport[AlertState] {
+  object AlertState extends UnapplySupport[AlertState] with FactorySupport[AlertState] {
     implicit val f: BoxFactory[AlertState] = Box.factory[AlertState]
 
     override val values: Seq[AlertState] = V()
