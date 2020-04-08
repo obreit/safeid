@@ -1,9 +1,9 @@
 package examples
 
-import box.{TypedBox, SealedFactorySupport}
+import box.{BoxOf, SealedFactorySupport}
 
 
-sealed abstract class BigSealed(val repr: String) extends TypedBox[String]
+sealed abstract class BigSealed(val repr: String) extends BoxOf[String]
 object BigSealed extends SealedFactorySupport[BigSealed] {
   override val values = Values()
 

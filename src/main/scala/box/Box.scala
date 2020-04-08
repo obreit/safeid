@@ -26,8 +26,8 @@ object Box extends BoxFunctions {
   }
 }
 
-trait TypedBox[T] extends Box {
-  override type Repr = T
+trait BoxOf[R] extends Box {
+  override type Repr = R
 }
 
 

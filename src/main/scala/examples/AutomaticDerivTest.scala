@@ -1,8 +1,8 @@
 package examples
 
-import box.{BoxFactory, TypedBox}
+import box.{BoxFactory, BoxOf}
 
-case class AutomaticDerivTest(repr: Int) extends TypedBox[Int]
+case class AutomaticDerivTest(repr: Int) extends BoxOf[Int]
 object AutomaticDerivTest {
   // this should be selected over the default BoxFactory by default
   // --> the instance creation should be only called once

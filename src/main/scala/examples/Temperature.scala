@@ -1,5 +1,5 @@
 package examples
 
-import box.TypedBox
+import box.BoxOf
 
-case class Temperature(repr: Int) extends TypedBox[Int]
+case class Temperature(repr: Int) extends BoxOf[Int]

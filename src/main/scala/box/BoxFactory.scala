@@ -29,7 +29,7 @@ object BoxFactory {
   implicit def boxCaseClassCstr[B <: Box](implicit G: Generic.Aux[B, B#Repr :: HNil]): BoxFactory[B] = {
     instance[B] { repr =>
       Try(G.from(repr :: HNil)).toEither.left.map { ex =>
-        s"Error parsing '$repr', due to ${ex.getMessage}"
+        Option(ex.getMessage).fold(s"Error creating instance from '$repr'")(identity)
       }
     }
   }

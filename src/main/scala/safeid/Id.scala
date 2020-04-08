@@ -5,6 +5,6 @@ import box.Box
 trait Id extends Box
 object Id extends IdFunctions
 
-trait TypedId[T] extends Id {
-  type Repr = T
+trait IdOf[R] extends Id {
+  type Repr = R
 }

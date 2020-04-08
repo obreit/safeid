@@ -2,6 +2,6 @@ package safeid.examples
 
 import java.util.UUID
 
-import safeid.TypedId
+import safeid.IdOf
 
-case class UserId(repr: UUID) extends TypedId[UUID]
+case class UserId(repr: UUID) extends IdOf[UUID]
