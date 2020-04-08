@@ -7,6 +7,9 @@ trait BoxFunctions {
   type U <: Box
 
   def create[B <: U: BoxFactory](r: B#Repr): Valid[B] = BoxFactory[B].create(r)
-  def unsafe[B <: U: BoxFactory](r: B#Repr): B = BoxFactory[B].unsafe(r)
-  def value[B <: U: BoxFactory](b: B): B#Repr = BoxFactory[B].value(b)
+  def unsafe[B <: U: BoxFactory](r: B#Repr): B = BoxFactory[B].create(r).fold(
+    err => throw new IllegalArgumentException(err),
+    identity
+  )
+  def value[B <: U: BoxFactory](b: B): B#Repr = b.repr
 }

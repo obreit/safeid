@@ -1,13 +1,12 @@
 import java.util.UUID
 
-import adts.Alert.AlertState
-import adts.Alert.AlertState.{AlertClear, AlertSet}
-import adts.{BoxedInt, BoxedString}
+import examples.{AutomaticDerivTest, BigSealed, BoxedInt, BoxedString, Temperature}
 import box.Box
+import BigSealed._
 import box.syntax.BoxImplicits._
 import json.CustomProtocol._
 import safeid.Id
-import safeid.examples.{DeviceId, EntityId1, UserId}
+import safeid.examples.{AutomaticDerivId, DeviceId, EntityId1, UserId}
 import spray.json._
 
 object Main extends App {
@@ -38,9 +37,9 @@ object Main extends App {
 
   println(Box.create[BoxedString](""))
   println(Box.create[BoxedInt](42))
-  println(Box.create[AlertState]("otherss"))
-  println(Box.create[AlertState]("set") == Box.create[AlertState]("set"))
-  println(Box.create[AlertState]("set") == Box.create[AlertState]("clear"))
+  println(Box.create[BigSealed]("otherss"))
+  println(Box.create[BigSealed]("set") == Box.create[BigSealed]("set"))
+  println(Box.create[BigSealed]("set") == Box.create[BigSealed]("clear"))
 
   println(Id.random[EntityId1] == Id.random[EntityId1])
 
@@ -59,9 +58,10 @@ object Main extends App {
   println("-" * 100)
 
   println("ads".unsafeBox[BoxedString])
-  println("clear".box[AlertState])
-  println("set".box[AlertState])
-  println("blaaà.".box[AlertState])
+  println("clear".box[BigSealed])
+  println("a".box[BigSealed])
+  println("set".box[BigSealed])
+  println("blaaà.".box[BigSealed])
   println(uuid.box[DeviceId])
 
   println(x.map(_.castTo[UserId]))
@@ -73,7 +73,7 @@ object Main extends App {
   println("-" * 100)
 
   println(42.unsafeBox[BoxedInt].toJson.convertTo[BoxedInt])
-  println("set".toJson.convertTo[AlertState])
+  println("1".toJson.convertTo[BigSealed])
 
   println()
 
@@ -81,18 +81,18 @@ object Main extends App {
   println("Check unapply")
   println("-" * 100)
 
-  println(AlertState.unapply("other"))
+  println(BigSealed.unapply("q"))
 
   def printUnapply(s: String): Unit = s match {
-    case AlertState(AlertSet) => println("MATCH Set")
-    case AlertState(AlertClear) => println("MATCH Clear")
-    case AlertState(state) => println(s"Match other state: $state")
+    case BigSealed(A) => println("MATCH A")
+    case BigSealed(B) => println("MATCH B")
+    case BigSealed(bs) => println(s"Match other state: $bs")
     case s => println(s"Match Other string $s")
   }
 
-  printUnapply("set")
-  printUnapply("clear")
-  printUnapply("other")
+  printUnapply("a")
+  printUnapply("m")
+  printUnapply("13")
   printUnapply("asdasd")
 
   println()
@@ -102,7 +102,7 @@ object Main extends App {
   println("-" * 100)
   println(Box.create[DeviceId](uuid))
   println(Box.unsafe[DeviceId](uuid))
-  println(Box.value[DeviceId](Id.random[DeviceId]))
+  //println(Box.value[DeviceId](Id.random[DeviceId]))
 
   // doesn't compile (as required)
 /*
@@ -118,16 +118,30 @@ object Main extends App {
   println("Check automatic derivation")
   println("-" * 100)
 
-  import box.auto._
-
-  println(Box.create[AlertState]("clear"))
-  println(Box.create[AlertSet.type]("set"))
-  println(AlertSet.toJson.convertTo[AlertSet.type])
-  println(Box.create[AlertState]("set"))
+  println(Box.create[BigSealed]("p"))
+  println(Box.create[A.type]("a"))
+  println(A.toJson.convertTo[A.type])
+  println(Box.create[D.type]("d"))
   println(Box.create[DeviceId](uuid))
   println(Box.create[BoxedInt](42).toJson.convertTo[BoxedInt])
 
-  import safeid.auto._
-
+  // calls the box factory constructor 3 times
   println(Id.random[DeviceId].toJson.convertTo[DeviceId])
+  // calls the box factory constructor once
+  println(Box.create[AutomaticDerivTest](1).toJson.convertTo[AutomaticDerivTest])
+  // calls the box factory constructor once
+  println(Id.random[AutomaticDerivId])
+  println(Id.random[AutomaticDerivId].toJson.convertTo[AutomaticDerivId])
+
+  println()
+  // check from applier
+  println("-" * 100)
+  println(Box.create[Temperature](-101))
+  println(Box.create[Temperature](-101))
+
+  println(Box.unsafe[Temperature](50).hashCode)
+  println(50.hashCode)
+
+  println(50 == 50)
+  println(50.unsafeBox[Temperature])
 }

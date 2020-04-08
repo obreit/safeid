@@ -1,4 +1,7 @@
+import shapeless.{Generic, HNil}
+
 package object box {
 
-  type Valid[B] = Either[String, B]
+  type GenericForObject[O] = Generic.Aux[O, HNil]
+  type Valid[T] = Either[String, T]
 }
