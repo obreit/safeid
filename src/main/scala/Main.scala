@@ -1,9 +1,9 @@
 import java.util.UUID
 
-import examples.{AutomaticDerivTest, BigSealed, BoxedInt, BoxedString, Temperature}
 import box.Box
-import BigSealed._
 import box.syntax.BoxImplicits._
+import examples.BigSealed._
+import examples._
 import json.CustomProtocol._
 import safeid.Id
 import safeid.examples.{AutomaticDerivId, DeviceId, EntityId1, UserId}
@@ -137,7 +137,7 @@ object Main extends App {
   // check from applier
   println("-" * 100)
   println(Box.create[Temperature](-101))
-  println(Box.create[Temperature](-101))
+  println(Box.create[BoxedInt](-101))
 
   println(Box.unsafe[Temperature](50).hashCode)
   println(50.hashCode)

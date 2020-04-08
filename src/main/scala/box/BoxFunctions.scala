@@ -11,5 +11,5 @@ trait BoxFunctions {
     err => throw new IllegalArgumentException(err),
     identity
   )
-  def value[B <: U: BoxFactory](b: B): B#Repr = b.repr
+  def value[B <: U](b: B): B#Repr = b.repr
 }

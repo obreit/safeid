@@ -1,16 +1,17 @@
 package box
 
-trait Box {
+trait Box extends Any {
   type Repr
 
   def repr: Repr
 
-  override final def equals(obj: scala.Any): Boolean = obj match {
+  //TODO why need to remove final when working with anyval?
+  override def equals(obj: scala.Any): Boolean = obj match {
     case that: Box if that.getClass == this.getClass => that.repr == this.repr
     case _ => false
   }
 
-  override final def hashCode: Int = repr.hashCode
+  override def hashCode: Int = repr.hashCode
 
   override final def toString: String = repr.toString
 }
@@ -26,7 +27,7 @@ object Box extends BoxFunctions {
   }
 }
 
-trait BoxOf[R] extends Box {
+trait BoxOf[R] extends Any with Box {
   override type Repr = R
 }
 

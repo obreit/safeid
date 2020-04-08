@@ -1,7 +1,11 @@
 package examples
 
-import box.BoxOf
+import box.{BoxFactory, BoxOf}
 
-case class BoxedString(repr: String) extends BoxOf[String] {
-  require(repr.nonEmpty, "is empty")
+case class BoxedString(repr: String) extends AnyVal with BoxOf[String]
+object BoxedString {
+  implicit val f: BoxFactory[BoxedString] = BoxFactory.instance {
+    case "" => Left("String cannot be empty")
+    case s => Right(BoxedString(s))
+  }
 }

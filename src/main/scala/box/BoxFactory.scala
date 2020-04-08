@@ -2,8 +2,6 @@ package box
 
 import shapeless.{::, Generic, HNil}
 
-import scala.util.Try
-
 trait BoxFactory[B <: Box] {
   def create(repr: B#Repr): Valid[B]
 }
@@ -25,12 +23,10 @@ object BoxFactory {
 
    Note that this is in scope by default for every single-value case class that extends Box!!!
    This can be overriden with a memoized version in the companion of the specific case class!!
-   */
-  implicit def boxCaseClassCstr[B <: Box](implicit G: Generic.Aux[B, B#Repr :: HNil]): BoxFactory[B] = {
-    instance[B] { repr =>
-      Try(G.from(repr :: HNil)).toEither.left.map { ex =>
-        Option(ex.getMessage).fold(s"Error creating instance from '$repr'")(identity)
-      }
-    }
-  }
+
+  TODO this is more 'functional' --> default convention should be that one doesn't throw
+  if a subclass needs to check some predicates during construction it should provide an instance of boxfactory
+  */
+  implicit def defaultFactory[B <: Box](implicit G: Generic.Aux[B, B#Repr :: HNil]): BoxFactory[B] =
+    instance[B](repr => Right(G.from(repr :: HNil)))
 }

@@ -2,9 +2,9 @@ package safeid
 
 import box.Box
 
-trait Id extends Box
+trait Id extends Any with Box
 object Id extends IdFunctions
 
-trait IdOf[R] extends Id {
+trait IdOf[R] extends Any with Id {
   type Repr = R
 }
