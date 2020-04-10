@@ -27,6 +27,8 @@ object BoxFactory {
   TODO this is more 'functional' --> default convention should be that one doesn't throw
   if a subclass needs to check some predicates during construction it should provide an instance of boxfactory
   */
-  implicit def defaultFactory[B <: Box](implicit G: Generic.Aux[B, B#Repr :: HNil]): BoxFactory[B] =
+  implicit def defaultFactory[B <: Box](implicit G: Generic.Aux[B, B#Repr :: HNil]): BoxFactory[B] = {
+    println(s"Instance!")
     instance[B](repr => Right(G.from(repr :: HNil)))
+  }
 }

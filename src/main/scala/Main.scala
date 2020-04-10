@@ -1,13 +1,17 @@
 import java.util.UUID
 
-import box.Box
+import box.{Box, RefinedBox}
 import box.syntax.BoxImplicits._
+import eu.timepit.refined.api.Refined
 import examples.BigSealed._
 import examples._
 import json.CustomProtocol._
 import safeid.Id
 import safeid.examples.{AutomaticDerivId, DeviceId, EntityId1, UserId}
 import spray.json._
+import eu.timepit.refined.auto._
+import examples.AlertSeverityRefined.ZeroToSeven
+import shapeless.{::, Generic, HNil, Typeable}
 
 object Main extends App {
 
@@ -144,4 +148,25 @@ object Main extends App {
 
   println(50 == 50)
   println(50.unsafeBox[Temperature])
+
+  println(Id.random[DeviceId])
+  println(Id.random[DeviceId])
+  println(Box.create[DeviceId](uuid))
+
+  println()
+  // Refined stuff
+  println("-" * 100)
+
+
+  import json.CustomProtocol._
+  println(AlertSeverityRefined(1).toJson.convertTo[AlertSeverityRefined])
+
+  println(Box.create[AlertSeverityRefined](7))
+
+  val sev: Int Refined ZeroToSeven = 1
+  println(AlertSeverityRefined(sev))
+  println(sev.toRef[AlertSeverityRefined])
+
+  println(5.toJson.convertTo[AlertSeverityRefined])
+  println(AlertSeverityRefined(4).toJson)
 }
